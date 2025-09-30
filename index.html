@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>노무 계산기 모음 | 퇴직금 · 연차수당 · 주52시간</title>
+  <meta name="description" content="퇴직금, 연차수당, 주52시간 초과 여부를 간편 계산할 수 있는 노무 계산기 모음 사이트입니다." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="노무 계산기 모음" />
+  <meta property="og:description" content="퇴직금 · 연차수당 · 주52시간 간편 계산" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ko_KR" />
+  <style>
+    :root { --bg:#0b0f14; --card:#121821; --muted:#8aa0b2; --text:#eaf2f9; --accent:#4da3ff; --good:#19c37d; --warn:#ff6b6b; }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic,Helvetica,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    header{max-width:1100px;margin:24px auto 8px;padding:0 16px}
+    .title{font-size:28px;font-weight:800;letter-spacing:-0.3px}
+    .sub{color:var(--muted);margin-top:6px}
+    main{max-width:1100px;margin:0 auto;padding:8px 16px 80px}
+    .grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+    .card{grid-column:span 12;background:var(--card);border:1px solid #1c2531;border-radius:16px;padding:18px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+    @media(min-width:900px){ .card--half{grid-column:span 6} }
+    .card h2{margin:0 0 10px;font-size:20px}
+    .help{color:var(--muted);font-size:13px;margin:6px 0 14px}
+    label{display:block;font-weight:600;margin:10px 0 6px}
+    input[type="number"],input[type="date"]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #293443;background:#0e141b;color:var(--text)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn{margin-top:14px;padding:12px 14px;border-radius:12px;border:1px solid #2b3950;background:#0f1620;color:var(--text);font-weight:700;cursor:pointer}
+    .btn:hover{border-color:#3b4f6e}
+    .result{margin-top:14px;padding:12px;border-radius:12px;background:#0f1c12;border:1px solid #1b3a28}
+    .result strong{color:var(--good)}
+    .warn{color:var(--warn);font-weight:700}
+    .mono{font-variant-numeric:tabular-nums}
+    .note{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}
+    footer{max-width:1100px;margin:20px auto 40px;padding:0 16px;color:var(--muted);font-size:12px}
+    hr.sep{border:0;border-top:1px solid #203044;margin:18px 0}
+    .ad{margin:14px 0;padding:10px;border:1px dashed #2c3a4f;border-radius:12px;color:#7c90a3;text-align:center}
+    nav{max-width:1100px;margin:0 auto 12px;padding:0 16px;display:flex;gap:12px;flex-wrap:wrap}
+    nav a{padding:8px 12px;border:1px solid #2b3950;border-radius:12px;background:#0f1620}
+  </style>
+  <!-- 애드센스: 승인 후 client & slot 채워서 주석 해제
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXX" crossorigin="anonymous"></script>
+  -->
+</head>
+<body>
+  <header>
+    <div class="title">노무 계산기 모음</div>
+    <div class="sub">퇴직금 · 연차수당 · 주52시간 — 간편 계산 (간이 참고용)</div>
+  </header>
+  <nav>
+    <a href="./">홈</a>
+    <a href="./about.html">소개</a>
+    <a href="./privacy.html">개인정보 처리방침</a>
+  </nav>
+
+  <main>
+    <div class="grid">
+
+      <section class="card">
+        <h2>퇴직금 계산기</h2>
+        <p class="help">평균임금(최근 3개월) 기준 간이 계산: 30일분 평균임금 × (재직일수 ÷ 365)</p>
+
+        <div class="row">
+          <div>
+            <label for="joinDate">입사일</label>
+            <input id="joinDate" type="date" />
+          </div>
+          <div>
+            <label for="leaveDate">퇴사일</label>
+            <input id="leaveDate" type="date" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="last3Total">최근 3개월 총임금(원)</label>
+            <input id="last3Total" type="number" inputmode="numeric" placeholder="예: 9000000" />
+          </div>
+          <div>
+            <label for="last3Days">최근 3개월 총일수(보통 90)</label>
+            <input id="last3Days" type="number" inputmode="numeric" value="90" />
+          </div>
+        </div>
+
+        <button class="btn" id="btnSev">퇴직금 계산</button>
+        <div class="result" id="sevOut" hidden>
+          <div><strong>총 재직일수:</strong> <span class="mono" id="svcDays">-</span> 일</div>
+          <div><strong>평균임금(1일):</strong> <span class="mono" id="avgDaily">-</span> 원</div>
+          <div><strong>평균임금(30일분):</strong> <span class="mono" id="avg30">-</span> 원</div>
+          <hr class="sep">
+          <div><strong>법정 퇴직금(간이):</strong> <span class="mono" id="sevPay">-</span> 원</div>
+        </div>
+
+        <div class="ad">광고 영역 (승인 후 코드 삽입)</div>
+
+        <p class="note">※ 간이 계산용 참고자료입니다. 수당 포함 범위, 휴직·결근, 평균임금/통상임금 차이 등으로 실제 금액은 달라질 수 있습니다.</p>
+      </section>
+
+      <section class="card card--half">
+        <h2>연차수당 계산기</h2>
+        <p class="help">미사용 연차 × 일급(통상/평균 중 높은 금액)</p>
+
+        <div>
+          <label for="annOccur">연차 발생일수</label>
+          <input id="annOccur" type="number" inputmode="numeric" value="15" />
+        </div>
+        <div>
+          <label for="annUsed">사용한 연차</label>
+          <input id="annUsed" type="number" inputmode="numeric" value="0" />
+        </div>
+        <div>
+          <label for="dailyWage">일급(원)</label>
+          <input id="dailyWage" type="number" inputmode="numeric" value="100000" />
+        </div>
+
+        <button class="btn" id="btnAnn">연차수당 계산</button>
+        <div class="result" id="annOut" hidden>
+          <div><strong>미사용 연차일수:</strong> <span class="mono" id="annRemain">-</span> 일</div>
+          <hr class="sep">
+          <div><strong>연차수당(간이):</strong> <span class="mono" id="annPay">-</span> 원</div>
+        </div>
+
+        <p class="note">※ 출근율 요건, 1년 미만 월차 등은 별도 규정이 적용될 수 있습니다.</p>
+      </section>
+
+      <section class="card card--half">
+        <h2>주52시간 근무시간 계산기</h2>
+        <p class="help">요일별 실근로시간(휴게 제외) 입력 → 합계·초과 여부</p>
+
+        <div class="row">
+          <div><label for="hMon">월</label><input id="hMon" type="number" value="0" /></div>
+          <div><label for="hTue">화</label><input id="hTue" type="number" value="0" /></div>
+        </div>
+        <div class="row">
+          <div><label for="hWed">수</label><input id="hWed" type="number" value="0" /></div>
+          <div><label for="hThu">목</label><input id="hThu" type="number" value="0" /></div>
+        </div>
+        <div class="row">
+          <div><label for="hFri">금</label><input id="hFri" type="number" value="0" /></div>
+          <div><label for="hSat">토</label><input id="hSat" type="number" value="0" /></div>
+        </div>
+        <div class="row">
+          <div><label for="hSun">일</label><input id="hSun" type="number" value="0" /></div>
+          <div></div>
+        </div>
+
+        <button class="btn" id="btn52">주간 합계 계산</button>
+        <div class="result" id="wOut" hidden>
+          <div><strong>주간 합계:</strong> <span class="mono" id="wSum">0</span> 시간</div>
+          <div><strong>법정 40시간 초과?</strong> <span id="over40">-</span></div>
+          <div><strong>주52시간 초과?</strong> <span id="over52">-</span></div>
+        </div>
+
+        <p class="note">※ 탄력·선택적 근로, 특별연장 등 제도 운영 시 한도 해석이 달라질 수 있습니다.</p>
+      </section>
+
+      <section class="card">
+        <h2>자주 묻는 질문(요약)</h2>
+        <ul class="help">
+          <li>퇴직금의 기준이 되는 평균임금은 원칙적으로 퇴직 직전 3개월 총임금 ÷ 그 기간의 총일수입니다.</li>
+          <li>연차수당은 미사용 연차 × 일급(통상임금/평균임금 중 높은 금액)을 기준으로 간이 계산합니다.</li>
+          <li>주52시간은 연장근로 포함 총 한도이며, 기본 법정근로시간은 주 40시간입니다.</li>
+        </ul>
+        <div class="ad">광고 영역 (승인 후 코드 삽입)</div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    © <span id="y"></span> 노무 계산기. 본 사이트의 계산 결과는 간이 참고용이며, 구체 사안은 별도 검토가 필요합니다.
+  </footer>
+
+  <script>
+    const fmt = (n)=> n.toLocaleString('ko-KR');
+
+    // 퇴직금
+    document.getElementById('btnSev').addEventListener('click', ()=>{
+      const jd = document.getElementById('joinDate').value;
+      const ld = document.getElementById('leaveDate').value;
+      const total = Number(document.getElementById('last3Total').value||0);
+      const days3 = Number(document.getElementById('last3Days').value||0);
+      if(!jd || !ld || !days3 || days3<=0){ alert('입사일/퇴사일/최근3개월 총일수를 확인하세요.'); return; }
+      const s = new Date(jd), e = new Date(ld);
+      const svcDays = Math.floor((e - s)/(1000*60*60*24)) + 1;
+      const avgDaily = total / days3;
+      const avg30 = avgDaily * 30;
+      const sev = avg30 * (svcDays / 365);
+      document.getElementById('svcDays').textContent = fmt(Math.max(0,svcDays));
+      document.getElementById('avgDaily').textContent = fmt(Math.max(0,Math.floor(avgDaily)));
+      document.getElementById('avg30').textContent = fmt(Math.max(0,Math.floor(avg30)));
+      document.getElementById('sevPay').textContent = fmt(Math.max(0,Math.floor(sev)));
+      document.getElementById('sevOut').hidden = false;
+    });
+
+    // 연차
+    document.getElementById('btnAnn').addEventListener('click', ()=>{
+      const occur = Number(document.getElementById('annOccur').value||0);
+      const used = Number(document.getElementById('annUsed').value||0);
+      const daily = Number(document.getElementById('dailyWage').value||0);
+      const remain = Math.max(occur - used, 0);
+      const pay = remain * daily;
+      document.getElementById('annRemain').textContent = fmt(remain);
+      document.getElementById('annPay').textContent = fmt(Math.floor(pay));
+      document.getElementById('annOut').hidden = false;
+    });
+
+    // 주52
+    document.getElementById('btn52').addEventListener('click', ()=>{
+      const ids = ['hMon','hTue','hWed','hThu','hFri','hSat','hSun'];
+      const nums = ids.map(id => Number(document.getElementById(id).value||0));
+      const sum = nums.reduce((a,b)=>a+b,0);
+      document.getElementById('wSum').textContent = fmt(sum);
+      document.getElementById('over40').innerHTML = sum>40 ? '<span class="warn">초과</span>' : '<span>정상</span>';
+      document.getElementById('over52').innerHTML = sum>52 ? '<span class="warn">초과</span>' : '<span>정상</span>';
+      document.getElementById('wOut').hidden = false;
+    });
+
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
